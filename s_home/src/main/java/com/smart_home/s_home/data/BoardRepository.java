@@ -18,15 +18,46 @@ public class BoardRepository {
 	private final String DATABASE_USER = "root";
 	private final String DATABASE_PASSWORD = "Iulian0107.";
 	
+	public List<Board> allBoards () {
+		List<Board> allBoards = new ArrayList<Board>();
+		String queryAllBoards = "SELECT * FROM commandboard";
+		//"SELECT U.username ,CB.board_id, CB.board_name, CB.board_serial, CB.board_start, CB.board_auto_start, CB.board_contor, CB.board_off FROM commandboard CB ,user U, connections C where C.FK_USER_ID = U.id and CB.board_id = C.FK_BOARD_ID order by U.username;"
+		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(queryAllBoards);
+			
+			while(rs.next()) {
+				Board board = new Board();
+				board.setBoardId(rs.getInt("board_id"));
+				board.setBoardName(rs.getString("board_name"));
+				board.setBoardSerial(rs.getString("board_serial"));
+				board.setBoardStart(rs.getDate("board_start"));
+				board.setBoardAutoStart(rs.getInt("board_auto_start"));
+				board.setBoardContor(rs.getInt("board_contor"));
+				board.setBoardOff(rs.getInt("board_off"));
+				allBoards.add(board);
+			}
+			
+			stmt.close();
+			rs.close();
+		}catch (Exception e) {
+			System.err.println("Error found in BoardRepository=>findBoards");
+			e.printStackTrace();
+		}
+		
+		return allBoards;
+		
+	}
+	
 	public void deleteBoard(String serial){
 		
 		String queryDelete ="DELETE FROM commandboard where board_serial = ?";
 		
-		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD);PreparedStatement pstmt = conn.prepareStatement(queryDelete)) {
-
+		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)) {
+			PreparedStatement pstmt = conn.prepareStatement(queryDelete);
 			pstmt.setString(1, serial);
-			
 			pstmt.execute();
+			
 			conn.commit();
 		} catch (Exception e) {
 			System.err.println("Error found in BoardRepository=>deleteBoard");
@@ -82,9 +113,30 @@ public class BoardRepository {
 	//gaseste toate panourile de comanda ale unui user
 	public List<Board> findBoards(int userId) {
 		List<Board> list = new ArrayList<>();
-		String queryBoards = "SELECT * FROM commandboard JOIN connections on connections.FK_BOARD_ID = commandboard.board_id and connections.FK_USER_ID= "+ userId;
-		
-		
+		String queryBoards = "SELECT board_id, board_name, board_serial, board_start, board_auto_start, board_contor, board_off  FROM commandboard JOIN connections on connections.FK_BOARD_ID = commandboard.board_id and connections.FK_USER_ID= "+ userId;
+		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(queryBoards);
+			
+			while(rs.next()) {
+				Board board = new Board();
+				board.setBoardId(rs.getInt("board_id"));
+				board.setBoardName(rs.getString("board_name"));
+				board.setBoardSerial(rs.getString("board_serial"));
+				board.setBoardStart(rs.getDate("board_start"));
+				board.setBoardAutoStart(rs.getInt("board_auto_start"));
+				board.setBoardContor(rs.getInt("board_contor"));
+				board.setBoardOff(rs.getInt("board_off"));
+				list.add(board);
+			}
+			
+			stmt.close();
+			rs.close();
+		}catch (Exception e) {
+			System.err.println("Error found in BoardRepository=>findBoards");
+			e.printStackTrace();
+		}
+			
 		return list;
 	}
 	
@@ -133,6 +185,7 @@ public class BoardRepository {
 			}
 			
 			stmt.close();
+			rs.close();
 		} catch (Exception e) {
 			System.err.println("Error found in BoardRepository=>oldBoard");
 			e.printStackTrace();
