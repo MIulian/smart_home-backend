@@ -17,6 +17,7 @@ import java.util.function.Function;
 import static com.smart_home.s_home.model.Constants.ACCESS_TOKEN_VALIDITY_SECONDS;
 import static com.smart_home.s_home.model.Constants.SIGNING_KEY;
 
+@SuppressWarnings("serial")
 @Component
 public class JwtTokenUtil implements Serializable {
 

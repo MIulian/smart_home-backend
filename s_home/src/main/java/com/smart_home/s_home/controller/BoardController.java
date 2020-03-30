@@ -33,6 +33,13 @@ public class BoardController {
         return new ApiResponse<List<Board>>(HttpStatus.OK.value(), "Command Board saved successfully.", allBoardList);
 	}
 	
+	@GetMapping("/edit/{serial}")
+	public ApiResponse<Board> oneBoard(@PathVariable String serial){
+		Board board = new Board();
+		board = boardImpl.oneBoard(serial);
+        return new ApiResponse<Board>(HttpStatus.OK.value(), "Command Board saved successfully.", board);
+	}
+	
 	@PostMapping
     public ApiResponse<Board> saveBoard(@RequestBody BoardDto board){
         return new ApiResponse<>(HttpStatus.OK.value(), "Command Board saved successfully.",boardImpl.saveBoard(board));

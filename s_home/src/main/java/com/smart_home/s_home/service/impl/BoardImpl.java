@@ -1,6 +1,7 @@
 package com.smart_home.s_home.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.smart_home.s_home.data.BoardRepository;
@@ -22,6 +23,10 @@ public class BoardImpl {
 		return allBoardList;
 	}
 	
+	public Board oneBoard (String serial) {
+		return boardRepository.oneBoard(serial);
+	}
+	
 	public void deleteBoard(String serial) {
 		boardRepository.deleteBoard(serial);
 	}
@@ -33,19 +38,15 @@ public class BoardImpl {
 	}
 
     public BoardDto updateBoard(BoardDto boardDto) {
-    	Board board = boardRepository.oldBoard(boardDto.getBoardId());
-    	if(board != null) {
-    		boardRepository.updateNewValues(board);
-    	}
-        return boardDto;
+        return boardRepository.updateNewValues(boardDto);
     }
 
-    public Board saveBoard(BoardDto board) {
+    @SuppressWarnings("deprecation")
+	public Board saveBoard(BoardDto board) {
     	Board newBoard = new Board();
     	newBoard.setBoardName(board.getBoardName());
     	newBoard.setBoardSerial(board.getBoardSerial());
-    	newBoard.setBoardStart(board.getBoardStart());
-    	newBoard.setBoardStart(board.getBoardStart());
+    	newBoard.setBoardStart(new Date(board.getBoardStart()));
     	newBoard.setBoardAutoStart(board.getBoardAutoStart());
     	newBoard.setBoardContor(board.getBoardContor());
     	newBoard.setBoardOff(board.getBoardOff());

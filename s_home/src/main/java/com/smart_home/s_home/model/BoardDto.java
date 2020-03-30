@@ -1,13 +1,12 @@
 package com.smart_home.s_home.model;
 
-import java.util.Date;
 
 public class BoardDto {
 
 	private int boardId;
 	private String boardName;
 	private String boardSerial;
-	private Date boardStart;
+	private String boardStart;
 	private int boardAutoStart;
 	private int boardContor;
 	private int boardOff;
@@ -29,10 +28,10 @@ public class BoardDto {
 	public void setBoardSerial(String boardSerial) {
 		this.boardSerial = boardSerial;
 	}
-	public Date getBoardStart() {
+	public String getBoardStart() {
 		return boardStart;
 	}
-	public void setBoardStart(Date boardStart) {
+	public void setBoardStart(String boardStart) {
 		this.boardStart = boardStart;
 	}
 	public int getBoardAutoStart() {

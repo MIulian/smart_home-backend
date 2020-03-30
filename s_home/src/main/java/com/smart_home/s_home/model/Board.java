@@ -11,8 +11,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.validator.constraints.br.TituloEleitoral;
-
 @Entity
 @Table(name = "commandboard")
 public class Board {
@@ -34,6 +32,21 @@ public class Board {
 	private int boardContor;
 	@Column(name="board_off")
 	private int boardOff;
+	
+	public Board() {
+		
+	}
+	@SuppressWarnings("deprecation")
+	public Board (BoardDto newBoard) {
+		this.boardId = newBoard.getBoardId();
+		this.boardName = newBoard.getBoardName();
+		this.boardSerial = newBoard.getBoardSerial();
+		this.boardStart = new Date(newBoard.getBoardStart());
+		this.boardAutoStart = newBoard.getBoardAutoStart();
+		this.boardContor = newBoard.getBoardContor();
+		this.boardOff = newBoard.getBoardOff();
+	}
+	
 	public int getBoardId() {
 		return boardId;
 	}
