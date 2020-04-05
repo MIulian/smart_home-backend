@@ -1,6 +1,6 @@
 package com.smart_home.s_home.model;
 
-import java.util.Date;
+import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "commandboard")
@@ -23,9 +21,8 @@ public class Board {
 	private String boardName;
 	@Column(name="board_serial")
 	private String boardSerial;
-	@Temporal(TemporalType.TIME)
 	@Column(name="board_start")
-	private Date boardStart;
+	private LocalTime boardStart;
 	@Column(name="board_auto_start")
 	private int boardAutoStart;
 	@Column(name="board_contor")
@@ -36,12 +33,12 @@ public class Board {
 	public Board() {
 		
 	}
-	@SuppressWarnings("deprecation")
+
 	public Board (BoardDto newBoard) {
 		this.boardId = newBoard.getBoardId();
 		this.boardName = newBoard.getBoardName();
 		this.boardSerial = newBoard.getBoardSerial();
-		this.boardStart = new Date(newBoard.getBoardStart());
+		this.boardStart = LocalTime.parse(newBoard.getBoardStart());
 		this.boardAutoStart = newBoard.getBoardAutoStart();
 		this.boardContor = newBoard.getBoardContor();
 		this.boardOff = newBoard.getBoardOff();
@@ -65,10 +62,10 @@ public class Board {
 	public void setBoardSerial(String boardSerial) {
 		this.boardSerial = boardSerial;
 	}
-	public Date getBoardStart() {
+	public LocalTime getBoardStart() {
 		return boardStart;
 	}
-	public void setBoardStart(Date boardStart) {
+	public void setBoardStart(LocalTime boardStart) {
 		this.boardStart = boardStart;
 	}
 	public int getBoardAutoStart() {

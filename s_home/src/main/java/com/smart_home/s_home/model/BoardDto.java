@@ -3,6 +3,7 @@ package com.smart_home.s_home.model;
 
 public class BoardDto {
 
+	private String username;
 	private int boardId;
 	private String boardName;
 	private String boardSerial;
@@ -10,6 +11,14 @@ public class BoardDto {
 	private int boardAutoStart;
 	private int boardContor;
 	private int boardOff;
+	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
 	public int getBoardId() {
 		return boardId;
 	}

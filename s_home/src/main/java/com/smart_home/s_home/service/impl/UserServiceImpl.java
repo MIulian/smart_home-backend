@@ -63,6 +63,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 		Optional<User> optionalUser = userDao.findById(id);
 		return optionalUser.isPresent() ? optionalUser.get() : null;
 	}
+	
+	@Override
+	public String  findUsernameById(int id) {
+		String username = "";
+		User user = findById(id);
+		if(user != null) {
+			username =  user.getUsername();
+		}
+		
+		return username;
+	}
 
     @Override
     public UserDto update(UserDto userDto) {

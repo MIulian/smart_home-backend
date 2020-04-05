@@ -1,7 +1,6 @@
 package com.smart_home.s_home.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.smart_home.s_home.data.BoardRepository;
@@ -17,10 +16,31 @@ public class BoardImpl {
 
 	BoardRepository boardRepository = new BoardRepository();
 	
-	public List<Board> allBoards() {
-		List<Board> allBoardList = new ArrayList<>();
-		allBoardList.addAll(boardRepository.allBoards());
-		return allBoardList;
+	public List<BoardDto> allBoards() {
+		boolean exist = true;
+		
+		List<BoardDto> allBoardList = new ArrayList<BoardDto>();
+		List<BoardDto> usersBoardList = new ArrayList<BoardDto>();
+		
+		allBoardList.addAll(boardRepository.getAllBoards());
+		usersBoardList.addAll(boardRepository.getUsersBoards());
+		
+		List<BoardDto> boardList = new ArrayList<BoardDto>();
+		
+		for (BoardDto board : allBoardList) {
+			exist = true;
+			for (BoardDto newBoard : usersBoardList) {
+				if(board.getBoardSerial().equalsIgnoreCase(newBoard.getBoardSerial())) {
+					exist = false;
+					break;
+				}
+			}
+			if(exist) {
+				boardList.add(board);
+			}
+		}
+		boardList.addAll(usersBoardList);
+		return boardList;
 	}
 	
 	public Board oneBoard (String serial) {
@@ -31,8 +51,8 @@ public class BoardImpl {
 		boardRepository.deleteBoard(serial);
 	}
 
-	public List<Board> findBoardByUserId(int id) {
-		List<Board> boardList = new ArrayList<>();
+	public List<BoardDto> findBoardByUserId(int id) {
+		List<BoardDto> boardList = new ArrayList<>();
 		boardList.addAll(boardRepository.findBoards(id));
 		return boardList;
 	}
@@ -41,15 +61,7 @@ public class BoardImpl {
         return boardRepository.updateNewValues(boardDto);
     }
 
-    @SuppressWarnings("deprecation")
-	public Board saveBoard(BoardDto board) {
-    	Board newBoard = new Board();
-    	newBoard.setBoardName(board.getBoardName());
-    	newBoard.setBoardSerial(board.getBoardSerial());
-    	newBoard.setBoardStart(new Date(board.getBoardStart()));
-    	newBoard.setBoardAutoStart(board.getBoardAutoStart());
-    	newBoard.setBoardContor(board.getBoardContor());
-    	newBoard.setBoardOff(board.getBoardOff());
-        return boardRepository.saveBoard(newBoard);
+	public BoardDto saveBoard(BoardDto board) {
+        return boardRepository.saveBoard(board);
     }
 }

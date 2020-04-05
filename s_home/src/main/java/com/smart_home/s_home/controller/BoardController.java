@@ -1,6 +1,6 @@
 package com.smart_home.s_home.controller;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -27,28 +27,22 @@ public class BoardController {
 	private BoardImpl boardImpl = new BoardImpl();
 	
 	@GetMapping
-	public ApiResponse<List<Board>> allBoards(){
-		List<Board> allBoardList = new ArrayList<>();
-		allBoardList.addAll(boardImpl.allBoards());
-        return new ApiResponse<List<Board>>(HttpStatus.OK.value(), "Command Board saved successfully.", allBoardList);
+	public ApiResponse<List<BoardDto>> allBoards(){
+        return new ApiResponse<List<BoardDto>>(HttpStatus.OK.value(), "Command Board saved successfully.", boardImpl.allBoards());
 	}
 	
 	@GetMapping("/edit/{serial}")
 	public ApiResponse<Board> oneBoard(@PathVariable String serial){
-		Board board = new Board();
-		board = boardImpl.oneBoard(serial);
-        return new ApiResponse<Board>(HttpStatus.OK.value(), "Command Board saved successfully.", board);
+        return new ApiResponse<Board>(HttpStatus.OK.value(), "Command Board saved successfully.", boardImpl.oneBoard(serial));
 	}
 	
 	@PostMapping
-    public ApiResponse<Board> saveBoard(@RequestBody BoardDto board){
+    public ApiResponse<BoardDto> saveBoard(@RequestBody BoardDto board){
         return new ApiResponse<>(HttpStatus.OK.value(), "Command Board saved successfully.",boardImpl.saveBoard(board));
     }
 	@GetMapping("/{id}")
-    public ApiResponse<List<Board>> listUserBoard(@PathVariable int id){
-		List<Board> boardList = new ArrayList<>();
-		boardList.addAll(boardImpl.findBoardByUserId(id));
-        return new ApiResponse<List<Board>>(HttpStatus.OK.value(), "Command Board saved successfully.", boardList);
+    public ApiResponse<List<BoardDto>> listUserBoard(@PathVariable int id){
+        return new ApiResponse<List<BoardDto>>(HttpStatus.OK.value(), "Command Board saved successfully.", boardImpl.findBoardByUserId(id));
     }
 
     @PutMapping("/{id}")
@@ -56,7 +50,7 @@ public class BoardController {
         return new ApiResponse<>(HttpStatus.OK.value(), "Command Board  updated successfully.",boardImpl.updateBoard(boardDto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{serial}")
     public ApiResponse<Void> deleteBoard(@PathVariable String serial) {
     	boardImpl.deleteBoard(serial);
         return new ApiResponse<>(HttpStatus.OK.value(), "Command Board  fetched successfully.", null);

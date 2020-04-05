@@ -16,6 +16,8 @@ public interface UserService {
     User findOne(String username);
 
     User findById(int id);
+    
+    String findUsernameById(int id);
 
     UserDto update(UserDto userDto);
 }

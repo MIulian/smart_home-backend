@@ -33,6 +33,11 @@ public class UserController {
     public ApiResponse<User> getOne(@PathVariable int id){
         return new ApiResponse<>(HttpStatus.OK.value(), "User fetched successfully.",userService.findById(id));
     }
+    
+    @GetMapping("/username/{id}")
+    public ApiResponse<User> getUsername(@PathVariable int id){
+        return new ApiResponse<>(HttpStatus.OK.value(), "User fetched successfully.",userService.findUsernameById(id));
+    }
 
     @PutMapping("/{id}")
     public ApiResponse<UserDto> update(@RequestBody UserDto userDto) {
