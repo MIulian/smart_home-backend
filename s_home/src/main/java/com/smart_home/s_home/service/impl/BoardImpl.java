@@ -51,6 +51,12 @@ public class BoardImpl {
 		boardRepository.deleteBoard(serial);
 	}
 
+	public List<BoardDto> findBoardByUserName(String username) {
+		List<BoardDto> boardList = new ArrayList<>();
+		boardList.addAll(boardRepository.findUserBoards(username));
+		return boardList;
+	}
+	
 	public List<BoardDto> findBoardByUserId(int id) {
 		List<BoardDto> boardList = new ArrayList<>();
 		boardList.addAll(boardRepository.findBoards(id));

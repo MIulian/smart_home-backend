@@ -1,8 +1,5 @@
 package com.smart_home.s_home.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Date;
 
 import javax.persistence.*;
@@ -25,9 +22,7 @@ public class User {
     private String username;
     @Column(name = "email_address")
     private String emailAddress;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String password;
+
     @Column
     private String firstName;
     @Column
@@ -71,12 +66,6 @@ public class User {
 	}
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	public String getFirstName() {
 		return firstName;

@@ -7,7 +7,6 @@ public class UserDto {
     private int id;
     private String username;
     private String emailAddress;
-    private String password;
     private String firstName;
     private String lastName;
     private int age;
@@ -34,12 +33,6 @@ public class UserDto {
 	}
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
 	}
 	public String getFirstName() {
 		return firstName;

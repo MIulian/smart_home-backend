@@ -245,6 +245,37 @@ public class BoardRepository {
 		return list;
 	}
 	
+	public List<BoardDto> findUserBoards(String username) {
+		List<BoardDto> list = new ArrayList<>();
+		String queryBoards = "SELECT board_id, board_name, board_serial, board_start, board_auto_start, board_contor, board_off  FROM commandboard, user, connections where connections.FK_BOARD_ID = board_id and connections.FK_USER_ID= id and username = '"+ username+"'";
+		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
+			Statement stmt = conn.createStatement();
+			System.out.println("BoardRepository=>findUserBoards=> "+queryBoards);
+			ResultSet rs = stmt.executeQuery(queryBoards);
+			
+			while(rs.next()) {
+				BoardDto board = new BoardDto();
+				board.setUsername(username);
+				board.setBoardId(rs.getInt("board_id"));
+				board.setBoardName(rs.getString("board_name"));
+				board.setBoardSerial(rs.getString("board_serial"));
+				board.setBoardStart(rs.getString("board_start"));
+				board.setBoardAutoStart(rs.getInt("board_auto_start"));
+				board.setBoardContor(rs.getInt("board_contor"));
+				board.setBoardOff(rs.getInt("board_off"));
+				list.add(board);
+			}
+			
+			stmt.close();
+			rs.close();
+		}catch (Exception e) {
+			System.err.println("Error found in BoardRepository=>findUserBoards");
+			e.printStackTrace();
+		}
+			
+		return list;
+	}
+	
 	public BoardDto updateNewValues(BoardDto board) {
 		
 		BoardDto newBoard=new BoardDto();
