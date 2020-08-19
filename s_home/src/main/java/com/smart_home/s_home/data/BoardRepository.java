@@ -1,11 +1,14 @@
 package com.smart_home.s_home.data;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +21,9 @@ public class BoardRepository {
 	private final String DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/s_home_db";
 	private final String DATABASE_USER = "root";
 	private final String DATABASE_PASSWORD = "Iulian0107.";
+	private final SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+	private final SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+	private final SimpleDateFormat runTimeForm = new SimpleDateFormat("HH:mm");
 	
 	public List<BoardDto> getAllBoards () {
 		List<BoardDto> allBoards = new ArrayList<BoardDto>();
@@ -34,10 +40,25 @@ public class BoardRepository {
 				board.setBoardId(rs.getInt("board_id"));
 				board.setBoardName(rs.getString("board_name"));
 				board.setBoardSerial(rs.getString("board_serial"));
-				board.setBoardStart(rs.getString("board_start"));
-				board.setBoardAutoStart(rs.getInt("board_auto_start"));
+				board.setBoardStart(time.format(rs.getTime("board_start")));
+				if(rs.getDate("board_start_date") != null){
+					board.setBoardStartDate(date.format(rs.getDate("board_start_date")));
+				}
+				if(rs.getDate("board_run_time") != null){
+					board.setBoardRunTime(runTimeForm.format(rs.getTime("board_run_time")));
+				}
+				if(rs.getInt("board_auto_start") == 0) {
+					board.setBoardAutoStart(false);
+				}else {
+					board.setBoardAutoStart(true);
+				}
 				board.setBoardContor(rs.getInt("board_contor"));
-				board.setBoardOff(rs.getInt("board_off"));
+				if(rs.getInt("board_off") == 0) {
+					board.setBoardOff(false);
+				}else {
+					board.setBoardOff(true);
+				}
+				
 				allBoards.add(board);
 			}
 			
@@ -54,7 +75,7 @@ public class BoardRepository {
 	
 	public List<BoardDto> getUsersBoards(){
 		
-		String queryBoards = "SELECT username, board_id, board_name, board_serial, board_start, board_auto_start, board_contor, board_off FROM commandboard, user, connections where connections.FK_BOARD_ID = board_id and connections.FK_USER_ID= id";
+		String queryBoards = "SELECT username, board_id, board_name, board_serial, board_start, board_start_date, board_run_time, board_auto_start, board_contor, board_off FROM commandboard, user, connections where connections.FK_BOARD_ID = board_id and connections.FK_USER_ID= id";
 		List<BoardDto> usersBoards = new ArrayList<BoardDto>();
 		
 		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
@@ -68,10 +89,24 @@ public class BoardRepository {
 				board.setBoardId(rs.getInt("board_id"));
 				board.setBoardName(rs.getString("board_name"));
 				board.setBoardSerial(rs.getString("board_serial"));
-				board.setBoardStart(rs.getString("board_start"));
-				board.setBoardAutoStart(rs.getInt("board_auto_start"));
+				board.setBoardStart(time.format(rs.getTime("board_start")));
+				if(rs.getDate("board_start_date") != null){
+					board.setBoardStartDate(date.format(rs.getDate("board_start_date")));
+				}
+				if(rs.getDate("board_run_time") != null){
+					board.setBoardRunTime(runTimeForm.format(rs.getTime("board_run_time")));
+				}
+				if(rs.getInt("board_auto_start") == 0) {
+					board.setBoardAutoStart(false);
+				}else {
+					board.setBoardAutoStart(true);
+				}
 				board.setBoardContor(rs.getInt("board_contor"));
-				board.setBoardOff(rs.getInt("board_off"));
+				if(rs.getInt("board_off") == 0) {
+					board.setBoardOff(false);
+				}else {
+					board.setBoardOff(true);
+				}
 				usersBoards.add(board);
 			}
 			
@@ -97,7 +132,9 @@ public class BoardRepository {
 				board.setBoardId(rs.getInt("board_id"));
 				board.setBoardName(rs.getString("board_name"));
 				board.setBoardSerial(rs.getString("board_serial"));
-				board.setBoardStart(LocalTime.parse(rs.getString("board_start")));
+				board.setBoardStart(LocalTime.parse(time.format(rs.getTime("board_start"))));
+				board.setBoardStartDate(LocalDate.parse(rs.getString("board_start_date")));
+				board.setBoardRunTime(LocalTime.parse(runTimeForm.format(rs.getTime("board_run_time"))));
 				board.setBoardAutoStart(rs.getInt("board_auto_start"));
 				board.setBoardContor(rs.getInt("board_contor"));
 				board.setBoardOff(rs.getInt("board_off"));
@@ -216,7 +253,7 @@ public class BoardRepository {
 	
 	public List<BoardDto> findBoards(int userId) {
 		List<BoardDto> list = new ArrayList<>();
-		String queryBoards = "SELECT username, board_id, board_name, board_serial, board_start, board_auto_start, board_contor, board_off  FROM commandboard, user, connections where connections.FK_BOARD_ID = board_id and connections.FK_USER_ID= id and id = "+ userId;
+		String queryBoards = "SELECT username, board_id, board_name, board_serial, board_start, board_start_date, board_run_time, board_auto_start, board_contor, board_off  FROM commandboard, user, connections where connections.FK_BOARD_ID = board_id and connections.FK_USER_ID= id and id = "+ userId;
 		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
 			Statement stmt = conn.createStatement();
 			System.out.println("BoardRepository=>findBoards=> "+queryBoards);
@@ -228,10 +265,24 @@ public class BoardRepository {
 				board.setBoardId(rs.getInt("board_id"));
 				board.setBoardName(rs.getString("board_name"));
 				board.setBoardSerial(rs.getString("board_serial"));
-				board.setBoardStart(rs.getString("board_start"));
-				board.setBoardAutoStart(rs.getInt("board_auto_start"));
+				board.setBoardStart(time.format(rs.getTime("board_start")));
+				if(rs.getDate("board_start_date") != null){
+					board.setBoardStartDate(date.format(rs.getDate("board_start_date")));
+				}
+				if(rs.getDate("board_run_time") != null){
+					board.setBoardRunTime(runTimeForm.format(rs.getTime("board_run_time")));
+				}
+				if(rs.getInt("board_auto_start") == 0) {
+					board.setBoardAutoStart(false);
+				}else {
+					board.setBoardAutoStart(true);
+				}
 				board.setBoardContor(rs.getInt("board_contor"));
-				board.setBoardOff(rs.getInt("board_off"));
+				if(rs.getInt("board_off") == 0) {
+					board.setBoardOff(false);
+				}else {
+					board.setBoardOff(true);
+				}
 				list.add(board);
 			}
 			
@@ -247,7 +298,7 @@ public class BoardRepository {
 	
 	public List<BoardDto> findUserBoards(String username) {
 		List<BoardDto> list = new ArrayList<>();
-		String queryBoards = "SELECT board_id, board_name, board_serial, board_start, board_auto_start, board_contor, board_off  FROM commandboard, user, connections where connections.FK_BOARD_ID = board_id and connections.FK_USER_ID= id and username = '"+ username+"'";
+		String queryBoards = "SELECT board_id, board_name, board_serial, board_start, board_start_date, board_run_time, board_auto_start, board_contor, board_off  FROM commandboard, user, connections where connections.FK_BOARD_ID = board_id and connections.FK_USER_ID= id and username = '"+ username+"'";
 		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
 			Statement stmt = conn.createStatement();
 			System.out.println("BoardRepository=>findUserBoards=> "+queryBoards);
@@ -259,10 +310,24 @@ public class BoardRepository {
 				board.setBoardId(rs.getInt("board_id"));
 				board.setBoardName(rs.getString("board_name"));
 				board.setBoardSerial(rs.getString("board_serial"));
-				board.setBoardStart(rs.getString("board_start"));
-				board.setBoardAutoStart(rs.getInt("board_auto_start"));
+				board.setBoardStart(time.format(rs.getTime("board_start")));
+				if(rs.getDate("board_start_date") != null){
+					board.setBoardStartDate(date.format(rs.getDate("board_start_date")));
+				}
+				if(rs.getDate("board_run_time") != null){
+					board.setBoardRunTime(runTimeForm.format(rs.getTime("board_run_time")));
+				}
+				if(rs.getInt("board_auto_start") == 0) {
+					board.setBoardAutoStart(false);
+				}else {
+					board.setBoardAutoStart(true);
+				}
 				board.setBoardContor(rs.getInt("board_contor"));
-				board.setBoardOff(rs.getInt("board_off"));
+				if(rs.getInt("board_off") == 0) {
+					board.setBoardOff(false);
+				}else {
+					board.setBoardOff(true);
+				}
 				list.add(board);
 			}
 			
@@ -281,18 +346,30 @@ public class BoardRepository {
 		BoardDto newBoard=new BoardDto();
 		PreparedStatement pstmt = null;
 		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)) {
-			String queryUpdate = "UPDATE commandboard SET board_name=? , board_start=? , board_auto_start=? , board_contor=? , board_off=? WHERE board_serial = ?";
+			String queryUpdate = "UPDATE commandboard SET board_name=? , board_start=? , board_start_date=? , board_run_time=? , board_auto_start=? , board_contor=? , board_off=? WHERE board_serial = ?";
 			
 			
 			pstmt = conn.prepareStatement(queryUpdate);
 			pstmt.setString(1, board.getBoardName());
 			pstmt.setTime(2, Time.valueOf(board.getBoardStart()));
-			pstmt.setInt(3, board.getBoardAutoStart());
-			pstmt.setInt(4, board.getBoardContor());
-			pstmt.setInt(5, board.getBoardOff());
-			pstmt.setString(6, board.getBoardSerial());
+			pstmt.setDate(3, Date.valueOf(board.getBoardStartDate()));
+			pstmt.setTime(4, Time.valueOf(board.getBoardRunTime()));
+			if(board.getBoardAutoStart() == false) {
+				pstmt.setInt(5, 0);
+			}else {
+				pstmt.setInt(5, 1);
+			}
+			
+			pstmt.setInt(6, board.getBoardContor());
+			if(board.getBoardOff() == false) {
+				pstmt.setInt(7, 0);
+			}else {
+				pstmt.setInt(7, 1);
+			}
+			pstmt.setString(8, board.getBoardSerial());
+			
 			System.out.println("BoardRepository=>updateNewValues=> "+queryUpdate);
-			System.out.println("valori noi: "+board.getBoardName()+", "+ board.getBoardStart()+" ,"+board.getBoardAutoStart()+" ,"+board.getBoardContor()+" ,"+board.getBoardOff());
+			System.out.println("valori noi: "+board.getBoardName()+", "+ board.getBoardStart()+" ,"+board.getBoardStartDate()+" ,"+board.getBoardRunTime()+" ,"+board.getBoardAutoStart()+" ,"+board.getBoardContor()+" ,"+board.getBoardOff());
 			pstmt.executeUpdate();
 			
 			pstmt.close();
@@ -328,17 +405,29 @@ public class BoardRepository {
 	public boolean insertBoard(BoardDto newBoard) {
 		
 		boolean complete=false;
-		String querySaveNewBoard = "INSERT INTO commandboard(board_name, board_serial, board_start, board_auto_start, board_contor, board_off) VALUES( ? , ? , ? , ? , ? , ? )";
+		String querySaveNewBoard = "INSERT INTO commandboard(board_name, board_serial, board_start, board_start_date, board_run_time, board_auto_start, board_contor, board_off) VALUES( ? , ? , ? , ? , ? , ? , ?   , ? )";
 		
 		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)) {
 		
 			PreparedStatement pstmt = conn.prepareStatement(querySaveNewBoard);
 			pstmt.setString(1, newBoard.getBoardName());
 			pstmt.setString(2, newBoard.getBoardSerial());
-			pstmt.setTime(3, Time.valueOf(newBoard.getBoardStart()));
-			pstmt.setInt(4, newBoard.getBoardAutoStart());
-			pstmt.setInt(5, newBoard.getBoardContor());
-			pstmt.setInt(6, newBoard.getBoardOff());
+			String time = newBoard.getBoardStart()+":00";
+			pstmt.setTime(3, Time.valueOf(time));
+			pstmt.setDate(4, Date.valueOf(newBoard.getBoardStartDate()));
+			pstmt.setTime(5, Time.valueOf(newBoard.getBoardRunTime()));
+			if(newBoard.getBoardAutoStart() == false) {
+				pstmt.setInt(6, 0);
+			}else {
+				pstmt.setInt(6, 1);
+			}
+			
+			pstmt.setInt(7, newBoard.getBoardContor());
+			if(newBoard.getBoardOff() == false) {
+				pstmt.setInt(8, 0);
+			}else {
+				pstmt.setInt(8, 1);
+			}
 			System.out.println("BoardRepository=>insertBoard=> insert new Board: "+querySaveNewBoard);
 			pstmt.executeUpdate();
 			complete = true;

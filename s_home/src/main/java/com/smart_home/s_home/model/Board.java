@@ -1,5 +1,6 @@
 package com.smart_home.s_home.model;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javax.persistence.Column;
@@ -23,6 +24,10 @@ public class Board {
 	private String boardSerial;
 	@Column(name="board_start")
 	private LocalTime boardStart;
+	@Column(name="board_start_date")
+	private LocalDate boardStartDate;
+	@Column(name="board_run_time")
+	private LocalTime boardRunTime;
 	@Column(name="board_auto_start")
 	private int boardAutoStart;
 	@Column(name="board_contor")
@@ -39,9 +44,9 @@ public class Board {
 		this.boardName = newBoard.getBoardName();
 		this.boardSerial = newBoard.getBoardSerial();
 		this.boardStart = LocalTime.parse(newBoard.getBoardStart());
-		this.boardAutoStart = newBoard.getBoardAutoStart();
+		this.boardAutoStart = newBoard.getBoardAutoStartInt();
 		this.boardContor = newBoard.getBoardContor();
-		this.boardOff = newBoard.getBoardOff();
+		this.boardOff = newBoard.getBoardOffInt();
 	}
 	
 	public int getBoardId() {
@@ -67,6 +72,18 @@ public class Board {
 	}
 	public void setBoardStart(LocalTime boardStart) {
 		this.boardStart = boardStart;
+	}
+	public void setBoardStartDate(LocalDate boardStartDate) {
+		this.boardStartDate = boardStartDate;
+	}
+	public LocalDate getBoardStartDate() {
+		return boardStartDate;
+	}
+	public void setBoardRunTime(LocalTime boardRunTime) {
+		this.boardRunTime = boardRunTime;
+	}
+	public LocalTime getBoardRunTime() {
+		return boardRunTime;
 	}
 	public int getBoardAutoStart() {
 		return boardAutoStart;

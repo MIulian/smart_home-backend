@@ -1,5 +1,6 @@
 package com.smart_home.s_home.service.impl;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +69,16 @@ public class BoardImpl {
     }
 
 	public BoardDto saveBoard(BoardDto board) {
+		if(board.getBoardRunTime() != null && !(board.getBoardRunTime().equals(" "))) {
+			int time = Integer.valueOf(board.getBoardRunTime());
+			int hour = 00 ;
+			int min = 00 ;
+			DecimalFormat form = new DecimalFormat("00");
+			hour = (time / 60);
+			min = (time - (hour * 60));
+			board.setBoardRunTime(form.format(hour)+":"+form.format(min)+":00");
+			
+		}
         return boardRepository.saveBoard(board);
     }
 }

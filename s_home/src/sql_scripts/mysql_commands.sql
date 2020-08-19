@@ -6,6 +6,8 @@ board_id int auto_increment primary key,
 board_name varchar(255),
 board_serial varchar(255) unique,
 board_start time,
+board_start_date date,
+board_run_time time,
 board_auto_start int,
 board_contor int,
 board_off int,
@@ -23,8 +25,7 @@ foreign key (FK_BOARD_ID) references commandboard(board_id)
 CREATE TABLE USER(
 id INT PRIMARY KEY AUTO_INCREMENT,
 username VARCHAR(255) NOT NULL,
-email_address VARCHAR(255), 
-password VARCHAR(255) NOT NULL,
+email_address VARCHAR(255),
 firstName VARCHAR(255),
 lastName VARCHAR(255),
 age INT,
@@ -38,32 +39,29 @@ UNIQUE KEY unique_email (email),
 UNIQUE KEY unique_username (username));
 
 #parola: 12345
-INSERT INTO user (username, email_address, password, firstname, lastname, age, created_by, created_date, address, phone) 
-VALUES ('iulian01', 'iulian@domaine.ro', '$2a$10$IowXzryzKxbNUM8TXk/FqO/L5.pWUebBcDgZpaJvJChZBKkn8Trtq', 'Iulian', 'M', 30, 'Iulian',
-str_to_date('01-11-2019','%d-%m-%Y'), 'Timisoara 46', 0748123456);
+INSERT INTO user (username, email_address, firstname, lastname, age, created_by, created_date, address, phone) 
+VALUES ('iulian01', 'iulian@domaine.ro', 'Iulian', 'M', 30, str_to_date('01-11-2019','%d-%m-%Y'), 'Timisoara 46', 0748123456);
 
-INSERT INTO user (username, email_address, password, firstname, lastname, age, created_by, created_date, address, phone) 
-VALUES ('iulica01', 'iulica@domaine.ro', '$2a$10$IowXzryzKxbNUM8TXk/FqO/L5.pWUebBcDgZpaJvJChZBKkn8Trtq', 'Iulica', 'M', 2, 'Iulica',
-str_to_date('11-11-2019','%d-%m-%Y'), 'Timisoara 46', 074987654543);
+INSERT INTO user (username, email_address, firstname, lastname, age, created_by, created_date, address, phone) 
+VALUES ('iulica01', 'iulica@domaine.ro','Iulica', 'M', 2, 'Iulica', str_to_date('11-11-2019','%d-%m-%Y'), 'Timisoara 46', 074987654543);
 
-INSERT INTO user (username, email_address, password, firstname, lastname, age, created_by, created_date, address, phone) 
-VALUES ('ana01', 'aan@domaine.ro', '$2a$10$IowXzryzKxbNUM8TXk/FqO/L5.pWUebBcDgZpaJvJChZBKkn8Trtq', 'Ana', 'N', 20, 'Ana',
-str_to_date('20-11-2019','%d-%m-%Y'), 'Timisoara 46', 0987098);
+INSERT INTO user (username, email_address, firstname, lastname, age, created_by, created_date, address, phone) 
+VALUES ('ana01', 'aan@domaine.ro', 'Ana', 'N', 20, 'Ana',str_to_date('20-11-2019','%d-%m-%Y'), 'Timisoara 46', 0987098);
 
 insert into commandboard(board_name, board_serial, board_start, board_auto_start, board_contor, board_off)
-values('priza1','aa00001', '08:00:00', 0, 1, 0);
+values('priza1','aa00001', '08:00',str_to_date('09/09/2020','%d/%m/%Y'),'01:10' 0, 1, 0);
 
 insert into commandboard(board_name, board_serial, board_start, board_auto_start, board_contor, board_off)
-values('priza2','aa00002', '09:00:00', 0, 0, 0);
+values('priza2','aa00002', '09:00', str_to_date('20/09/2020','%d/%m/%Y')'20/09/2020','00:10' 0, 0, 0);
 
 insert into commandboard(board_name, board_serial, board_start, board_auto_start, board_contor, board_off)
-values('priza3','aa00003', '06:00:00', 0, 1, 0);
+values('priza3','aa00003', '06:00', str_to_date('15/09/2020','%d/%m/%Y'),'30:00' 0, 1, 0);
 
 insert into commandboard(board_name, board_serial, board_start, board_auto_start, board_contor, board_off)
-values('intrerupator1','ab00001', '07:00:00', 0, 0, 1);
+values('intrerupator1','ab00001', '07:00', str_to_date('11/09/2020','%d/%m/%Y'), '00:40'  0, 0, 1);
 
 insert into commandboard(board_name, board_serial, board_start, board_auto_start, board_contor, board_off)
-values('intrerupator1','ab00002', '07:30:00', 0, 1, 0);
+values('intrerupator1','ab00002', '07:30', str_to_date('10/09/2020','%d/%m/%Y'), '25:00' 0, 1, 0);
 
 insert into connections (fk_user_id, fk_board_id) values(1, 1);
 

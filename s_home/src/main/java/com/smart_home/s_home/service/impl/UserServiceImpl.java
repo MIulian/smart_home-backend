@@ -58,7 +58,7 @@ public class UserServiceImpl implements  UserService {
     public UserDto update(UserDto userDto) {
         User user = findById(userDto.getId());
         if(user != null) {
-            BeanUtils.copyProperties(userDto, user, "password");
+            BeanUtils.copyProperties(userDto, user);
             userDao.save(user);
         }
         return userDto;
@@ -80,4 +80,14 @@ public class UserServiceImpl implements  UserService {
 		newUser.setPhone(user.getPhone());
         return userDao.save(newUser);
     }
+
+	@Override
+	public boolean findByUsername(String username) {
+		
+		if(userDao.findByUsername(username) != null) {
+			return true;
+		}
+		
+		return false;
+	}
 }

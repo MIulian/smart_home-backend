@@ -19,6 +19,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/login/{username}")
+    public ApiResponse<User> exist(@PathVariable String username){
+        return new ApiResponse<>(HttpStatus.OK.value(), "User fetched successfully.",userService.findByUsername(username));
+    }
+    
     @PostMapping
     public ApiResponse<User> saveUser(@RequestBody UserDto user){
         return new ApiResponse<>(HttpStatus.OK.value(), "User saved successfully.",userService.save(user));

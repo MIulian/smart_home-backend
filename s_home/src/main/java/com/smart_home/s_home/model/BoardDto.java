@@ -1,6 +1,5 @@
 package com.smart_home.s_home.model;
 
-
 public class BoardDto {
 
 	private String username;
@@ -8,9 +7,11 @@ public class BoardDto {
 	private String boardName;
 	private String boardSerial;
 	private String boardStart;
-	private int boardAutoStart;
+	private String boardStartDate;
+	private String boardRunTime;
+	private boolean boardAutoStart;
 	private int boardContor;
-	private int boardOff;
+	private boolean boardOff;
 	
 	public String getUsername() {
 		return username;
@@ -40,13 +41,31 @@ public class BoardDto {
 	public String getBoardStart() {
 		return boardStart;
 	}
+	public void setBoardStartDate(String boardStartDate) {
+		this.boardStartDate = boardStartDate;
+	}
+	public String getBoardStartDate() {
+		return boardStartDate;
+	}
+	public void setBoardRunTime(String boardRunTime) {
+		this.boardRunTime = boardRunTime;
+	}
+	public String getBoardRunTime() {
+		return boardRunTime;
+	}
 	public void setBoardStart(String boardStart) {
 		this.boardStart = boardStart;
 	}
-	public int getBoardAutoStart() {
+	public int getBoardAutoStartInt() {
+		if( this.boardAutoStart == false) {
+			return 0;
+		}
+		return 1;
+	}
+	public boolean getBoardAutoStart() {
 		return boardAutoStart;
 	}
-	public void setBoardAutoStart(int boardAutoStart) {
+	public void setBoardAutoStart(boolean boardAutoStart) {
 		this.boardAutoStart = boardAutoStart;
 	}
 	public int getBoardContor() {
@@ -55,10 +74,16 @@ public class BoardDto {
 	public void setBoardContor(int boardContor) {
 		this.boardContor = boardContor;
 	}
-	public int getBoardOff() {
+	public int getBoardOffInt() {
+		if(this.boardOff == false) {
+			return 0;
+		}
+		return 1;
+	}
+	public boolean getBoardOff() {
 		return boardOff;
 	}
-	public void setBoardOff(int boardOff) {
+	public void setBoardOff(boolean boardOff) {
 		this.boardOff = boardOff;
 	}
 	
