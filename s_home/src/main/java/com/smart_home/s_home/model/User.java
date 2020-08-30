@@ -49,6 +49,8 @@ public class User {
     private String address;
     @Column
     private int phone;
+    
+    
 	public int getId() {
 		return id;
 	}

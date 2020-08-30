@@ -1,7 +1,5 @@
 package com.smart_home.s_home.data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Statement;
@@ -13,7 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import com.smart_home.s_home.model.Board;
+import com.smart_home.s_home.model.ArduinoModul;
 import com.smart_home.s_home.model.BoardDto;
 
 public class BoardRepository {
@@ -120,8 +118,8 @@ public class BoardRepository {
 		return usersBoards;
 	}
 	
-	public Board oneBoard (String serial) {
-		Board board = new Board();
+	public BoardDto oneBoard (String serial) {
+		BoardDto boardDto = new BoardDto();
 		String queryOneBoards = "Select * from commandboard where board_serial = '"+serial+"' ";
 		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
 			Statement stmt = conn.createStatement();
@@ -129,15 +127,23 @@ public class BoardRepository {
 			ResultSet rs = stmt.executeQuery(queryOneBoards);
 			
 			while(rs.next()) {
-				board.setBoardId(rs.getInt("board_id"));
-				board.setBoardName(rs.getString("board_name"));
-				board.setBoardSerial(rs.getString("board_serial"));
-				board.setBoardStart(LocalTime.parse(time.format(rs.getTime("board_start"))));
-				board.setBoardStartDate(LocalDate.parse(rs.getString("board_start_date")));
-				board.setBoardRunTime(LocalTime.parse(runTimeForm.format(rs.getTime("board_run_time"))));
-				board.setBoardAutoStart(rs.getInt("board_auto_start"));
-				board.setBoardContor(rs.getInt("board_contor"));
-				board.setBoardOff(rs.getInt("board_off"));
+				boardDto.setBoardId(rs.getInt("board_id"));
+				boardDto.setBoardName(rs.getString("board_name"));
+				boardDto.setBoardSerial(rs.getString("board_serial"));
+				boardDto.setBoardStart(time.format(rs.getTime("board_start")));
+				boardDto.setBoardStartDate(rs.getString("board_start_date"));
+				boardDto.setBoardRunTime(runTimeForm.format(rs.getTime("board_run_time")));
+				if(rs.getInt("board_auto_start") == 1) {
+					boardDto.setBoardAutoStart(true);
+				}else {
+					boardDto.setBoardAutoStart(false);
+				}
+				boardDto.setBoardContor(rs.getInt("board_contor"));
+				if(rs.getInt("board_off") == 1) {
+					boardDto.setBoardOff(true);
+				}else {
+					boardDto.setBoardOff(false);
+				}
 			}
 			
 			stmt.close();
@@ -147,7 +153,7 @@ public class BoardRepository {
 			e.printStackTrace();
 		}
 		
-		return board;
+		return boardDto;
 		
 	}
 	
@@ -229,26 +235,6 @@ public class BoardRepository {
 			e.printStackTrace();
 		}
 		return board;
-	}
-	
-	private int getContorValue(String serial) {
-		int contorValue = 0;
-		StringBuilder queryContor = new StringBuilder("SELECT board_contor FROM commandboard WHERE board_serial = '")
-				.append(serial)
-				.append("' ");
-		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD);Statement stmt = conn.createStatement();) {
-			System.out.println("BoardRepository=>getContorValue=> "+queryContor);
-			ResultSet rs = stmt.executeQuery(String.valueOf(queryContor));
-			
-			contorValue = rs.getInt("board_contor");
-			
-			conn.commit();
-		} catch (Exception e) {
-			System.err.println("Error found in BoardRepository=>getContorValue");
-			e.printStackTrace();
-		}
-		
-		return contorValue;
 	}
 	
 	public List<BoardDto> findBoards(int userId) {
@@ -351,9 +337,9 @@ public class BoardRepository {
 			
 			pstmt = conn.prepareStatement(queryUpdate);
 			pstmt.setString(1, board.getBoardName());
-			pstmt.setTime(2, Time.valueOf(board.getBoardStart()));
+			pstmt.setTime(2, Time.valueOf(board.getBoardStart()+":00"));
 			pstmt.setDate(3, Date.valueOf(board.getBoardStartDate()));
-			pstmt.setTime(4, Time.valueOf(board.getBoardRunTime()));
+			pstmt.setTime(4, Time.valueOf(board.getBoardRunTime()+":00"));
 			if(board.getBoardAutoStart() == false) {
 				pstmt.setInt(5, 0);
 			}else {
@@ -461,5 +447,88 @@ public class BoardRepository {
 			e.printStackTrace();
 		}
 		return boardId;
+	}
+	
+	public List<ArduinoModul> boardsToExecute() {
+		List<ArduinoModul> list = new ArrayList<>();
+		String queryBoards = "select board_serial, board_start, board_start_date, board_run_time from commandboard where board_off = 1 order by board_start_date";
+		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
+			Statement stmt = conn.createStatement();
+			System.out.println("BoardRepository=>findBoards=> "+queryBoards);
+			ResultSet rs = stmt.executeQuery(queryBoards);
+			
+			while(rs.next()) {
+				ArduinoModul modul = new ArduinoModul(
+						rs.getString("board_serial"),
+						rs.getString("board_start"),
+						rs.getString("board_start_date"),
+						rs.getString("board_run_time"),
+						false);
+						
+				list.add(modul);
+			}
+			
+			stmt.close();
+			rs.close();
+		}catch (Exception e) {
+			System.err.println("Error found in BoardRepository=>findBoards");
+			e.printStackTrace();
+		}
+			
+		return list;
+	}
+	
+	public List<ArduinoModul> boardsToExecuteDaily() {
+		List<ArduinoModul> list = new ArrayList<>();
+		String queryBoards = "select board_serial, board_start, board_start_date, board_run_time from commandboard where board_auto_start = 1 or board_contor > 2 order by board_start_date;";
+		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
+			Statement stmt = conn.createStatement();
+			System.out.println("BoardRepository=>findBoards=> "+queryBoards);
+			ResultSet rs = stmt.executeQuery(queryBoards);
+			
+			while(rs.next()) {
+				ArduinoModul modul = new ArduinoModul(
+						rs.getString("board_serial"),
+						rs.getString("board_start"),
+						rs.getString("board_start_date"),
+						rs.getString("board_run_time"),
+						false);
+				list.add(modul);
+			}
+			
+			stmt.close();
+			rs.close();
+		}catch (Exception e) {
+			System.err.println("Error found in BoardRepository=>findBoards");
+			e.printStackTrace();
+		}
+			
+		return list;
+	}
+	
+	public int oraInt(String ora) {
+		int result = 0;
+		
+		if(ora != null && !(ora.isEmpty())) {
+			String[] valori;
+			valori = ora.split(":");
+			for (String string : valori) {
+				result += Integer.parseInt(string) * 60;
+			}
+		}
+		
+		return result;
+	}
+	
+	public int durataInt(String durata) {
+		int result = 0;
+		if(durata != null && !(durata.isEmpty())) {
+			String[] valori;
+			valori = durata.split(":");
+			for (String string : valori) {
+				result += Integer.parseInt(string) * 60;
+			}
+		}
+		return result;
 	}
 }

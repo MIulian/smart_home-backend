@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.smart_home.s_home.data.BoardRepository;
-import com.smart_home.s_home.model.Board;
 import com.smart_home.s_home.model.BoardDto;
 
 
@@ -16,6 +15,7 @@ public class BoardImpl {
 	}
 
 	BoardRepository boardRepository = new BoardRepository();
+	ModuleImpl modul = new ModuleImpl();
 	
 	public List<BoardDto> allBoards() {
 		boolean exist = true;
@@ -44,12 +44,14 @@ public class BoardImpl {
 		return boardList;
 	}
 	
-	public Board oneBoard (String serial) {
+	public BoardDto oneBoard (String serial) {
 		return boardRepository.oneBoard(serial);
 	}
 	
 	public void deleteBoard(String serial) {
+		
 		boardRepository.deleteBoard(serial);
+		modul.updateListe();
 	}
 
 	public List<BoardDto> findBoardByUserName(String username) {
@@ -65,20 +67,35 @@ public class BoardImpl {
 	}
 
     public BoardDto updateBoard(BoardDto boardDto) {
-        return boardRepository.updateNewValues(boardDto);
+    	BoardDto board;
+    	if(boardDto.getBoardContor() > 2) {
+    		boardDto.setBoardAutoStart(true);
+    		boardDto.setBoardContor(0);
+    	}
+    	board = boardRepository.updateNewValues(boardDto);
+    	modul.updateListe();
+        return board;
     }
 
-	public BoardDto saveBoard(BoardDto board) {
-		if(board.getBoardRunTime() != null && !(board.getBoardRunTime().equals(" "))) {
-			int time = Integer.valueOf(board.getBoardRunTime());
+	public BoardDto saveBoard(BoardDto boardDto) {
+		BoardDto board;
+		if(boardDto.getBoardRunTime() != null && !(boardDto.getBoardRunTime().equals(" "))) {
+			int time = Integer.valueOf(boardDto.getBoardRunTime());
 			int hour = 00 ;
 			int min = 00 ;
 			DecimalFormat form = new DecimalFormat("00");
 			hour = (time / 60);
 			min = (time - (hour * 60));
-			board.setBoardRunTime(form.format(hour)+":"+form.format(min)+":00");
+			boardDto.setBoardRunTime(form.format(hour)+":"+form.format(min)+":00");
 			
 		}
-        return boardRepository.saveBoard(board);
+		
+		if(boardDto.getBoardContor() > 2) {
+    		boardDto.setBoardAutoStart(true);
+    		boardDto.setBoardContor(0);
+    	}
+		board = boardRepository.saveBoard(boardDto);
+		modul.updateListe();
+        return board;
     }
 }

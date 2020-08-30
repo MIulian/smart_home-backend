@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smart_home.s_home.model.ApiResponse;
-import com.smart_home.s_home.model.Board;
 import com.smart_home.s_home.model.BoardDto;
 import com.smart_home.s_home.service.impl.BoardImpl;
 
@@ -32,8 +31,8 @@ public class BoardController {
 	}
 	
 	@GetMapping("/edit/{serial}")
-	public ApiResponse<Board> oneBoard(@PathVariable String serial){
-        return new ApiResponse<Board>(HttpStatus.OK.value(), "Command Board saved successfully.", boardImpl.oneBoard(serial));
+	public ApiResponse<BoardDto> oneBoard(@PathVariable String serial){
+        return new ApiResponse<BoardDto>(HttpStatus.OK.value(), "Command Board saved successfully.", boardImpl.oneBoard(serial));
 	}
 	
 	@PostMapping
