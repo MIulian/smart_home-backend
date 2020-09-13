@@ -454,7 +454,7 @@ public class BoardRepository {
 		String queryBoards = "select board_serial, board_start, board_start_date, board_run_time from commandboard where board_off = 1 order by board_start_date";
 		try(Connection conn = DriverManager.getConnection(DATABASE_URL,DATABASE_USER,DATABASE_PASSWORD)){
 			Statement stmt = conn.createStatement();
-			System.out.println("BoardRepository=>findBoards=> "+queryBoards);
+			System.out.println("BoardRepository=>boardsToExecute=> "+queryBoards);
 			ResultSet rs = stmt.executeQuery(queryBoards);
 			
 			while(rs.next()) {

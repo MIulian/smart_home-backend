@@ -64,6 +64,7 @@ public class ModuleImpl {
 	}
 
 	public void updateListe() {
+		System.out.println("ModuleImpl=>updateListe: Actualizare lista panouri");
 		this.listModule = boardRepository.boardsToExecute();
 		
 	}

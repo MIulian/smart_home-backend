@@ -54,7 +54,7 @@ public class ArduinoModulRun implements SchedulingConfigurer{
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
         taskRegistrar.setScheduler(taskExecutor());
-        arduino.openConnection();
+        //arduino.openConnection();
         taskRegistrar.addTriggerTask(
                 new Runnable() {
                     @Override public void run() {
